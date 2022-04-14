@@ -10,8 +10,9 @@ type Config struct {
 		Port string `json:"port"`
 	} `json:"server"`
 	Redis struct {
-		Host     string `json:"host"`
-		Port     string `json:"port"`
+		Addr     string `json:"addr"`
+		Password     string `json:"password"`
+		DB		int `json:"db"`
 	} `json:"redis"`
 	Options struct {
 		Schema string `json:"schema"`
