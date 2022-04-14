@@ -1,0 +1,13 @@
+{
+  "server": {
+    "port": "6125"
+  },
+  "options": {
+    "schema": "http",
+    "prefix": "localhost:6125"
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": "6379"
+  }
+}
