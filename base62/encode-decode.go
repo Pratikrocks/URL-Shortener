@@ -12,6 +12,7 @@ var (
 
 func Encode(number uint64) string {
 	var encodedUrl strings.Builder
+	encodedUrl.Grow(11)
 	for number > 0 {
 		encodedUrl.WriteByte(alphabet[number % length])
 		number /= length
@@ -26,7 +27,7 @@ func Decode(encodedUrl string) (uint64, error) {
 		if index == -1 {
 			return 0, errors.New("Invalid character")
 		}
-		decodedUrl += uint64(index) * length
+		decodedUrl +=  uint64(index) + length * decodedUrl
 	}
 	return decodedUrl, nil
 }
