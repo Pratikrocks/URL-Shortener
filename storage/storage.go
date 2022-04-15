@@ -5,7 +5,6 @@ import "time"
 type Service interface {
 	Save(string, time.Time) error
 	Get(string) (string, error)
-	GetInfo(string) (*Item, error)
 	Close() error
 }
 
