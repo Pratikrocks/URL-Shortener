@@ -34,3 +34,18 @@ func (db * DB) Save(shortUrl string, metaData storage.Item) error {
 	return err
 }
 
+func (db * DB) Get(shortUrl string) (storage.Item, error) {
+	json, err := db.client.Get(shortUrl).Result()
+	if err == redis.Nil {
+		return storage.Item{}, &storage.ErrNotFound{}
+	} else if err != nil {
+		return storage.Item{}, err
+	}
+	var item storage.Item
+	err = json2.Unmarshal([]byte(json), &item)
+	if err != nil {
+		return storage.Item{}, err
+	}
+	return item, nil
+}
+

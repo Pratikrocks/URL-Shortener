@@ -16,3 +16,9 @@ type Item struct {
 	ExpiresIn time.Duration `json:"expires" redis:"expires"`
 	Visits  int    `json:"visits" redis:"visits"`
 }
+
+type ErrNotFound struct {}
+
+func (e *ErrNotFound) Error() string {
+	return "the key is not found"
+}
