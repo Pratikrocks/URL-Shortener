@@ -2,26 +2,31 @@ package redis
 
 import (
 	json2 "encoding/json"
+	"fmt"
 	"github.com/go-redis/redis"
 	"time"
 	"urlShortener/config"
 	"urlShortener/storage"
 )
 
-type DB struct { client *redis.Client }
+type DB struct { Client *redis.Client }
 
 func (db *DB) New(cfg config.Config) error {
-	db.client = redis.NewClient(&redis.Options{
-		Addr:     cfg.Redis.Addr,
-		Password: cfg.Redis.Password,
-		DB:       cfg.Redis.DB,
+	address := cfg.Redis.Addr
+	password := cfg.Redis.Password
+	Db := cfg.Redis.DB
+	db.Client = redis.NewClient(&redis.Options{
+		Addr:     address,
+		Password: password,
+		DB:       Db,
 	})
-	_, err := db.client.Ping().Result()
+	res, err := db.Client.Ping().Result()
+	fmt.Println(res, err)
 	return err
 }
 
 func (db *DB) Close() error {
-	return db.client.Close()
+	return db.Client.Close()
 }
 
 func (db * DB) Save(shortUrl string, metaData storage.Item) error {
@@ -30,12 +35,12 @@ func (db * DB) Save(shortUrl string, metaData storage.Item) error {
  	if err != nil {
 		return err
 	}
-	err = db.client.Set(shortUrl, json, time.Second * metaData.ExpiresIn).Err()
+	err = db.Client.Set(shortUrl, json, time.Second * metaData.ExpiresIn).Err()
 	return err
 }
 
 func (db * DB) Get(shortUrl string) (storage.Item, error) {
-	json, err := db.client.Get(shortUrl).Result()
+	json, err := db.Client.Get(shortUrl).Result()
 	if err == redis.Nil {
 		return storage.Item{}, &storage.ErrNotFound{}
 	} else if err != nil {
