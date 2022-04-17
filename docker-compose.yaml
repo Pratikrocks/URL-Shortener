@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  db:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/db:/data
+    environment:
+      - REDIS_PASSWORD=redis
+      - REDIS_DB=0

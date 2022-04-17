@@ -11,7 +11,7 @@ import (
 )
 
 type Service struct {
-	db *redis.DB
+	Db *redis.DB
 }
 
 func (service *Service) New() *http.ServeMux {
@@ -20,6 +20,7 @@ func (service *Service) New() *http.ServeMux {
 		w.Write([]byte("ping OK!!"))
 	})
 	mux.HandleFunc("/info", service.encode)
+	service.Db = &redis.DB{}
 	return mux
 }
 
