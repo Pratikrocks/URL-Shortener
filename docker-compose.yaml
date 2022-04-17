@@ -5,6 +5,7 @@ services:
     image: redis
     ports:
       - "6379:6379"
+    command: redis-server --requirepass redis
     volumes:
       - ./data/db:/data
     environment:
