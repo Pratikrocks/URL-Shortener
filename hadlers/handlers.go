@@ -24,8 +24,18 @@ func New() *mux.Router {
 
 func encode(w http.ResponseWriter,r *http.Request) {
 	fmt.Println("encode handlers: ", redis.RedisDB)
+
 	var p storage.Item
 	err := json.NewDecoder(r.Body).Decode(&p)
+
+	check, _ := redis.Get(p.URL)
+
+	if check.URL != "" {
+		fmt.Println("URL already exists")
+		w.Write([]byte("URL already exists"))
+		return
+	}
+
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
@@ -34,6 +44,28 @@ func encode(w http.ResponseWriter,r *http.Request) {
 	p.AddedTime = time.Now()
 	hash := rand.Intn(124567754)
 	hash1 := base62.Encode(uint64(hash))
+
+	for {
+		if redis.RedisDB.Exists(hash1).Val() == 1 {
+			item, err := redis.Get(hash1)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(err.Error()))
+				return
+			}
+
+			if item.URL == p.URL {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("URL already exists " + hash1))
+				return
+			}
+
+			hash = rand.Intn(124567754)
+			hash1 = base62.Encode(uint64(hash))
+		} else {
+			break
+		}
+	}
 
 	err = redis.Save(hash1, p)
 	if err != nil {

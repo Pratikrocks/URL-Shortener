@@ -15,12 +15,18 @@ func Close() error {
 
 func Save(shortUrl string, metaData storage.Item) error {
 	metaData.AddedTime = time.Now()
+
 	json, err := json2.Marshal(metaData)
  	if err != nil {
 		return err
 	}
 
 	err = RedisDB.Set(shortUrl, json, 0).Err()
+	if err != nil {
+		return err
+	}
+	err = RedisDB.Set(metaData.URL, json, 0).Err()
+
 	return err
 }
 
