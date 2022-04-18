@@ -7,7 +7,7 @@
     "prefix": "localhost:6125"
   },
   "redis": {
-    "addr": "127.0.0.1:6379",
+    "addr": "db:6379",
     "password": "redis",
     "db": "0"
   }
