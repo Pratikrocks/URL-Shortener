@@ -34,6 +34,7 @@ func main() {
 	if e != nil {
 		panic(e)
 	}
-	mux := hadlers.New()
-	http.ListenAndServe(":8082", mux)
+	rtr := hadlers.New()
+	http.Handle("/", rtr)
+	http.ListenAndServe(":8082", nil)
 }

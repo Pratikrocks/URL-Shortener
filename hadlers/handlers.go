@@ -3,6 +3,7 @@ package hadlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"math/rand"
 	"net/http"
 	"time"
@@ -11,13 +12,14 @@ import (
 	"urlShortener/storage/redis"
 )
 
-func New() *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+func New() *mux.Router {
+	rtr := mux.NewRouter()
+	rtr.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ping OK!!"))
 	})
-	mux.HandleFunc("/info", encode)
-	return mux
+	rtr.HandleFunc("/info", encode)
+	rtr.HandleFunc("/view/{id:[0-9a-zA-Z]+}", decode)
+	return rtr
 }
 
 func encode(w http.ResponseWriter,r *http.Request) {
@@ -40,4 +42,18 @@ func encode(w http.ResponseWriter,r *http.Request) {
 		return
 	}
 	w.Write([]byte(hash1))
+}
+
+func decode(w http.ResponseWriter, r *http.Request) {
+	URL_Id := mux.Vars(r)
+	urlId := URL_Id["id"]
+	fmt.Println(urlId)
+
+	item, err := redis.Get(urlId)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	w.Write([]byte(item.URL))
 }
