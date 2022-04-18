@@ -32,8 +32,8 @@ func encode(w http.ResponseWriter,r *http.Request) {
 	p.AddedTime = time.Now()
 	hash := rand.Intn(124567754)
 	hash1 := base62.Encode(uint64(hash))
-	json, err := json.Marshal(p)
-	err = redis.RedisDB.Set(p.URL, json, 0).Err()
+
+	err = redis.Save(hash1, p)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
