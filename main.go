@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	RD "github.com/go-redis/redis"
 	"io"
 	"net/http"
 	"os"
 	"urlShortener/config"
 	"urlShortener/hadlers"
 	"urlShortener/storage/redis"
-	RD "github.com/go-redis/redis"
 )
 
 func main() {

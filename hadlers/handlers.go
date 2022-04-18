@@ -55,5 +55,6 @@ func decode(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	w.Write([]byte(item.URL))
+
+	http.Redirect(w, r, item.URL, 302)
 }
