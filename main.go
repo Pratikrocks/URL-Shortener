@@ -7,7 +7,8 @@ import (
 	"os"
 	"urlShortener/config"
 	"urlShortener/hadlers"
-	redis2 "urlShortener/storage/redis"
+	"urlShortener/storage/redis"
+	RD "github.com/go-redis/redis"
 )
 
 func main() {
@@ -24,13 +25,15 @@ func main() {
 	}
 	json.Unmarshal(configBytes, &cfg)
 
-	service := &hadlers.Service{}
-	service.Db = &redis2.DB{}
-	service.Db.New(cfg)
+	redis.RedisDB = RD.NewClient(&RD.Options{
+		Addr:     cfg.Redis.Addr,
+		Password: cfg.Redis.Password,
+		DB:       cfg.Redis.DB,
+	})
 
 	if e != nil {
 		panic(e)
 	}
-	mux := service.New()
+	mux := hadlers.New()
 	http.ListenAndServe(":8082", mux)
 }
