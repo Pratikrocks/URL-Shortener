@@ -29,3 +29,11 @@ $ curl --location --request POST 'localhost:8082/info' \
 `url` is the url to be encoded.
 `expires` is the time in seconds after which the url will expire. [*TBD*]
 
+In the response you will get the short url hash code of length 5.
+For example, if the url is `https://leetcode.com/problemset/` then the
+short url code corresponding to it might be `gb2A1`
+
+* To decode a short url make a `GET` request to `/view/{:url_hash}` endpoint.
+* Corresponding to this example to get redirected to the original url open any browser and make a 
+`GET` request to `/view/gb2A1` with full url endpoints as
+``localhost:8082/view/gb2A1`` which will get redirected to the original url.
